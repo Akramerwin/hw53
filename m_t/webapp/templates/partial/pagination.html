@@ -1,0 +1,43 @@
+<nav aria-label="Page navigation example">
+    {% if not page_obj.has_previous %}
+  <ul class="pagination">
+      {% else %}
+        <ul class="pagination">
+            <li class="page-item">
+      <a class="page-link" href="?{% if query %}{{ query }}&{% endif %}page=1" aria-label="Previous">
+        <span aria-hidden="true"><<</span>
+      </a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+            <li class="page-item"><a class="page-link"
+                                     href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                {{ page_obj.previous_page_number }}</a></li>
+
+      {% endif %}
+
+    <li class="page-item active">
+             <form method="get">
+                 {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+                <input type="text" class="form-control" name="page" value="{{ page_obj.number }}">
+        </form>
+    </li>
+    {% if not page_obj.has_next %}
+
+      {% else %}
+    <li class="page-item">
+                <li class="page-item"><a class="page-link" href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.next_page_number }}">
+            {{ page_obj.next_page_number }}</a></li>
+      <a class="page-link" href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+              <a class="page-link" href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.paginator.num_pages }}" aria-label="Next">
+        <span aria-hidden="true">>></span>
+      </a>
+    </li>
+{% endif %}
+  </ul>
+</nav>
