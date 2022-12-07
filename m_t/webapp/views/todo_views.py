@@ -8,7 +8,7 @@ from django.db.models import Q
 
 
 class TodoView(ListView):
-    template_name = 'index.html'
+    template_name = 'todo/index.html'
     context_object_name = 'todo'
     model = Todo
     ordering = ['-date_of_update']
@@ -48,7 +48,7 @@ class TodoView(ListView):
 
 
 class View(TemplateView):
-   template_name = 'todo_view.html'
+   template_name = 'todo/todo_view.html'
 
    def get_context_data(self, **kwargs):
        context = super().get_context_data(**kwargs)
@@ -57,7 +57,7 @@ class View(TemplateView):
 
 
 class TodoCreate(FormView):
-    template_name = 'todo_create.html'
+    template_name = 'todo/todo_create.html'
     form_class = TodoForm
 
     def get_success_url(self):
@@ -69,7 +69,7 @@ class TodoCreate(FormView):
 
 
 class UpdateTodo(FormView):
-    template_name = 'todo_update.html'
+    template_name = 'todo/todo_update.html'
     form_class = TodoForm
 
     def get_object(self):
@@ -103,7 +103,7 @@ class UpdateTodo(FormView):
 class Delete(View):
     def get(self, request, pk):
         todo = get_object_or_404(Todo, pk=pk)
-        return render(request, 'delete.html', context={'todo': todo})
+        return render(request, 'todo/delete.html', context={'todo': todo})
     def post(self, request, pk):
         todo = get_object_or_404(Todo, pk=pk)
         todo.delete()
