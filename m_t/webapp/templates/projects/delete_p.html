@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Delete Project{% endblock %}
+{% block nav %}
+{#    <li class="nav-item"><a class="nav-link" href="{% url 'view' todo.pk %}">View</a></li>#}
+{% endblock %}
+{% block content %}
+    <h1>Are you sure want to delete project? "{{ projects.title }}"?</h1>
+    <form method="POST" action="{% url "deletep" projects.pk %}" class="text-center">
+        {% csrf_token %}
+        <p><input type="submit" value="Confirm" style="color: red"></p>
+        <p><button type="button" class="btn btn-info">
+<a style="text-decoration: none; color: black" href="{% url "view_p" projects.pk %}">Cancel</a></button></p>
+    </form>
+{% endblock %}

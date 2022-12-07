@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block nav %}
+<a class="nav-link" href="{% url "create_todo" projects.pk %}">Create!</a>
+<a class="nav-link" href="{% url "update_p" projects.pk %}">Update Project</a>
+<a class="nav-link" href="{% url "deletep" projects.pk %}">Delete project!</a>
+{% endblock %}
+{% block content %}
+   <h1><i class="bi bi-list-task"></i> Project view </h1>
+    <br/>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+  <div class="col">
+    <div class="card border-success">
+      <div class="card-body text-success">
+        <h5 class="card-title">Title: {{ projects.title }}</h5>
+        <p class="card-text">Desc: {{ projects.desc }}</p>
+          <p class="card-text">Start: {{ projects.s_date }}</p>
+          <p class="card-text">Deadline: {{ projects.e_date }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+        <br/>
+</div>
+    <br/>
+     {% for todoess in projects.p_id.all %}
+       <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+  <div class="col">
+    <div class="card border-success">
+      <div class="card-body text-success">
+        <h5 class="card-title">Title: {{ todoess.short_description }}</h5>
+        <p class="card-text">Status: {{ todoess.status }}</p>
+        <a href="{{ todoess.get_absolute_url }}" class="btn btn-primary">Full view</a>
+      </div>
+    </div>
+  </div>
+</div>
+        <br/>
+</div>
+         <br/>
+        {% endfor %}
+    {% if is_paginated %}
+        {% include "partial/pagination.html" %}
+    {% endif %}
+{% endblock %}

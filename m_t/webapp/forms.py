@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import widgets
-from webapp.models import Todo
+from webapp.models import Todo, Projects
 from django.core.validators import BaseValidator, ValidationError
 from django.utils.deconstruct import deconstructible
 
@@ -31,3 +31,10 @@ class TodoForm(forms.ModelForm):
 
 class SimpleSearchForm(forms.Form):
     search = forms.CharField(max_length=50, required=False, label='Найти')
+
+class ProjectsForm(forms.ModelForm):
+    class Meta:
+        model = Projects
+        fields = ['title', 'desc', 's_date', 'e_date']
+        # exclude = []
+        widgets = {'s_date': widgets.SelectDateWidget, 'e_date': widgets.SelectDateWidget}

@@ -1,10 +1,45 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
-from webapp.models import Todo
-from webapp.forms import TodoForm, SimpleSearchForm
+from django.urls import reverse_lazy
+from django.views.generic.list import MultipleObjectMixin
+from webapp.models import Todo, Projects
+from webapp.forms import TodoForm, SimpleSearchForm, ProjectsForm
 from django.utils.http import urlencode
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView, FormView, ListView
+from django.views.generic import FormView, ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.db.models import Q
+
+
+class DeleteProjject(DeleteView):
+    template_name = 'projects/delete_p.html'
+    model = Projects
+    context_object_name = 'projects'
+    success_url = reverse_lazy('projects')
+
+class UpdateProject(UpdateView):
+    model = Projects
+    template_name = 'projects/pupdate.html'
+    form_class = ProjectsForm
+    context_object_name = 'projects'
+
+    def get_success_url(self):
+        return reverse('view_p', kwargs={'pk': self.object.pk})
+
+class ProjectsCreate(CreateView):
+    template_name = 'projects/pcreate.html'
+    model = Projects
+    form_class = ProjectsForm
+
+class ProjectsList(ListView):
+    template_name = 'projects/ip.html'
+    context_object_name = 'projects'
+    model = Projects
+    ordering = ['-s_date']
+
+
+class ProjectsView(DetailView):
+    template_name = 'projects/view_projects.html'
+    model = Projects
+
 
 
 class TodoView(ListView):
@@ -43,68 +78,32 @@ class TodoView(ListView):
          context['search'] = self.search_value
         return context
 
-
-
-
-
-class View(TemplateView):
+class View(DetailView):
    template_name = 'todo/todo_view.html'
-
-   def get_context_data(self, **kwargs):
-       context = super().get_context_data(**kwargs)
-       context['todo'] = get_object_or_404(Todo, pk=kwargs['pk'])
-       return context
+   model = Todo
 
 
-class TodoCreate(FormView):
+class TodoCreate(CreateView):
     template_name = 'todo/todo_create.html'
+    model = Todo
     form_class = TodoForm
 
-    def get_success_url(self):
-        return reverse('view', kwargs = {'pk': self.todo.pk})
-
     def form_valid(self, form):
-        self.todo = form.save()
+        projects = get_object_or_404(Projects, pk=self.kwargs.get('pk'))
+        print(projects)
+        form.instance.p_id = projects
         return super().form_valid(form)
 
-
-class UpdateTodo(FormView):
+class UpdateTodo(UpdateView):
     template_name = 'todo/todo_update.html'
     form_class = TodoForm
-
-    def get_object(self):
-        pk = self.kwargs.get('pk')
-        return get_object_or_404(Todo, pk = pk)
-
-    def dispatch(self, request, *args, **kwargs):
-        self.todo = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['todo'] = self.todo
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['instance'] = self.todo
-        return kwargs
+    model = Todo
+    context_object_name = 'todo'
 
 
-    def form_valid(self, form):
-        self.todo = form.save()
-        return super().form_valid(form)
+class Delete(DeleteView):
+    template_name = 'todo/delete.html'
+    model = Todo
+    context_object_name = 'todo'
+    success_url = reverse_lazy('index')
 
-    def get_success_url(self):
-        return reverse('view', kwargs = {'pk': self.todo.pk})
-
-
-
-class Delete(View):
-    def get(self, request, pk):
-        todo = get_object_or_404(Todo, pk=pk)
-        return render(request, 'todo/delete.html', context={'todo': todo})
-    def post(self, request, pk):
-        todo = get_object_or_404(Todo, pk=pk)
-        todo.delete()
-        return redirect('index')

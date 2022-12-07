@@ -15,13 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webapp.views import TodoView, View, TodoCreate, UpdateTodo, Delete
+from webapp.views import TodoView, View, TodoCreate, UpdateTodo, Delete, ProjectsList, ProjectsView, ProjectsCreate,DeleteProjject, UpdateProject
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TodoView.as_view(), name="index"),
+    path('projects/', ProjectsList.as_view(), name="projects"),
+    path('projects/<int:pk>/', ProjectsView.as_view(), name='view_p'),
     path('todo/<int:pk>/', View.as_view(), name="view"),
-    path('todo/create/', TodoCreate.as_view(), name="create"),
+    path('projects/<int:pk>/todo/create/', TodoCreate.as_view(), name="create_todo"),
     path('todo/<int:pk>/update/', UpdateTodo.as_view(), name="update"),
     path('todo/<int:pk>/delete/', Delete.as_view(), name='delete'),
+    path('projects/create/', ProjectsCreate.as_view(), name="projects_create"),
+    path('projects/<int:pk>/delete/', DeleteProjject.as_view(), name="deletep"),
+    path('projects/<int:pk>/update/', UpdateProject.as_view(), name='update_p')
 ]
